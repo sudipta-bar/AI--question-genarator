@@ -24,6 +24,8 @@ export function useWebSocket() {
     if (!token) return;
     const configuredUrl = process.env.NEXT_PUBLIC_WS_URL;
     const socketUrl = configuredUrl?.startsWith('http://') ? undefined : configuredUrl;
+    if (!socketUrl && process.env.NODE_ENV === 'production') return;
+
     const socket = io(socketUrl ?? '', { auth: { token }, withCredentials: true });
     socketRef.current = socket;
     const setProgress = (status: 'queued' | 'processing', data: ProgressData) => {
