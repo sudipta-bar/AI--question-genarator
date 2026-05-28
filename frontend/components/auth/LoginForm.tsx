@@ -23,7 +23,8 @@ export function LoginForm() {
     try {
       const { data } = await api.post('/api/auth/login', values);
       setAuth(data.user, data.accessToken);
-      router.push('/assignments');
+      router.replace('/assignments');
+      router.refresh();
     } catch {
       setServerError('Invalid email or password');
     }

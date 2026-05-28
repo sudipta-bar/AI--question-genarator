@@ -9,6 +9,10 @@ import { Spinner } from '@/components/ui/Spinner';
 const publicRoutes = ['/login', '/register', '/forgot-password'];
 const protectedRoutes = ['/home', '/groups', '/assignments', '/toolkit', '/library', '/settings'];
 
+function matchesRoute(pathname: string, routes: string[]) {
+  return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isLoading = useAuthStore((state) => state.isLoading);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -17,8 +21,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setLoading = useAuthStore((state) => state.setLoading);
   const pathname = usePathname();
   const router = useRouter();
-  const isPublic = publicRoutes.includes(pathname) || pathname.startsWith('/reset-password/');
-  const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+  const isPublic = matchesRoute(pathname, publicRoutes) || pathname.startsWith('/reset-password/');
+  const isProtected = matchesRoute(pathname, protectedRoutes);
 
   useEffect(() => {
     if (isPublic) {

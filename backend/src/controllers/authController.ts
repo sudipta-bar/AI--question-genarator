@@ -42,7 +42,13 @@ function hashToken(token: string) {
 }
 
 function cookieOptions() {
-  return { httpOnly: true, secure: env.NODE_ENV === 'production', sameSite: 'strict' as const, maxAge: 7 * 24 * 60 * 60 * 1000 };
+  const isHttpsFrontend = env.FRONTEND_URL.startsWith('https://');
+  return {
+    httpOnly: true,
+    secure: isHttpsFrontend,
+    sameSite: isHttpsFrontend ? 'none' as const : 'lax' as const,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
 }
 
 function serializeUser(user: typeof User.prototype) {
