@@ -32,6 +32,7 @@ const server = http.createServer(app);
 function isAllowedOrigin(origin: string | undefined) {
   if (!origin) return true;
   if (origin === env.FRONTEND_URL) return true;
+  if (origin.endsWith('.vercel.app')) return true;
   return env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(origin);
 }
 
