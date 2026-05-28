@@ -22,11 +22,13 @@ export function useWebSocket() {
 
   useEffect(() => {
     if (!token) return;
-    const configuredUrl = process.env.NEXT_PUBLIC_WS_URL;
-    const socketUrl = configuredUrl?.startsWith('http://') || configuredUrl?.includes('.vercel.app') ? undefined : configuredUrl;
-    if (!socketUrl && process.env.NODE_ENV === 'production') return;
+    const configuredUrl = process.env.NEXT_PUBLIC_WS_URL || process.env.NEXT_PUBLIC_API_URL;
+    const isFrontendHost = configuredUrl?.includes('.vercel.app') || configuredUrl?.includes('localhost:3000') || configuredUrl?.includes('localhost:3001');
+    const isInsecureProductionUrl = process.env.NODE_ENV === 'production' && configuredUrl?.startsWith('http://');
+    const socketUrl = configuredUrl && !isFrontendHost && !isInsecureProductionUrl ? configuredUrl : undefined;
+    if (!socketUrl) return;
 
-    const socket = io(socketUrl ?? '', { auth: { token }, withCredentials: true });
+    const socket = io(socketUrl, { auth: { token }, withCredentials: true });
     socketRef.current = socket;
     const setProgress = (status: 'queued' | 'processing', data: ProgressData) => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
