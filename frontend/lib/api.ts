@@ -6,8 +6,9 @@ type QueueEntry = { resolve: (token: string) => void; reject: (error: unknown) =
 
 let isRefreshing = false;
 let queue: QueueEntry[] = [];
+const apiBaseURL = process.env.NEXT_PUBLIC_API_URL?.startsWith('http://') ? undefined : process.env.NEXT_PUBLIC_API_URL;
 
-const refreshClient = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL, withCredentials: true });
+const refreshClient = axios.create({ baseURL: apiBaseURL, withCredentials: true });
 
 function processQueue(error: unknown, token?: string) {
   queue.forEach((entry) => (error ? entry.reject(error) : entry.resolve(token ?? '')));
@@ -15,7 +16,7 @@ function processQueue(error: unknown, token?: string) {
 }
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: apiBaseURL,
   withCredentials: true,
 });
 

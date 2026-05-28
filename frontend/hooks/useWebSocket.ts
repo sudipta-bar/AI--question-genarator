@@ -22,7 +22,9 @@ export function useWebSocket() {
 
   useEffect(() => {
     if (!token) return;
-    const socket = io(process.env.NEXT_PUBLIC_WS_URL ?? '', { auth: { token }, withCredentials: true });
+    const configuredUrl = process.env.NEXT_PUBLIC_WS_URL;
+    const socketUrl = configuredUrl?.startsWith('http://') ? undefined : configuredUrl;
+    const socket = io(socketUrl ?? '', { auth: { token }, withCredentials: true });
     socketRef.current = socket;
     const setProgress = (status: 'queued' | 'processing', data: ProgressData) => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
