@@ -11,15 +11,17 @@ const protectedRoutes = ['/home', '/groups', '/assignments', '/toolkit', '/libra
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isLoading = useAuthStore((state) => state.isLoading);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const setAuth = useAuthStore((state) => state.setAuth);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
   const setLoading = useAuthStore((state) => state.setLoading);
   const pathname = usePathname();
   const router = useRouter();
+  const isPublic = publicRoutes.includes(pathname) || pathname.startsWith('/reset-password/');
+  const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
   useEffect(() => {
-    const isPublic = publicRoutes.includes(pathname) || pathname.startsWith('/reset-password/');
-    const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
-
+    setLoading(true);
     plainApi
       .get('/api/auth/me')
       .then(({ data }) => {
@@ -27,13 +29,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (isPublic) router.replace('/home');
       })
       .catch(() => {
-        setLoading(false);
+        clearAuth();
         if (isProtected || !isPublic) router.replace('/login');
       });
-  }, [pathname, router, setAuth, setLoading]);
+  }, [clearAuth, isProtected, isPublic, pathname, router, setAuth, setLoading]);
 
-  if (isLoading) {
+  if (isLoading || (!isPublic && !isAuthenticated)) {
     return <div className="flex min-h-screen items-center justify-center"><Spinner /></div>;
   }
+
   return <>{children}</>;
 }
