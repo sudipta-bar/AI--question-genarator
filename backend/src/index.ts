@@ -39,6 +39,9 @@ function isAllowedOrigin(origin: string | undefined) {
 
 const corsOptions: cors.CorsOptions = {
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type', 'X-Requested-With'],
+  optionsSuccessStatus: 204,
+  maxAge: 86400,
   origin(origin, callback) {
     callback(isAllowedOrigin(origin) ? null : new Error(`CORS blocked origin: ${origin}`), isAllowedOrigin(origin));
   },
@@ -48,6 +51,7 @@ const corsOptions: cors.CorsOptions = {
 const io = new Server(server, { cors: corsOptions });
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
