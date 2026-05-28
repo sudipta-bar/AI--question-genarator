@@ -17,6 +17,7 @@ function GroupModal({ onClose, onSave }: { onClose: () => void; onSave: (group: 
   const [name, setName] = useState('');
   const [className, setClassName] = useState('');
   const [subject, setSubject] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -26,7 +27,12 @@ function GroupModal({ onClose, onSave }: { onClose: () => void; onSave: (group: 
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    onSave({ name: name.trim(), className: className.trim(), subject: subject.trim() });
+    const next = { name: name.trim(), className: className.trim(), subject: subject.trim() };
+    if (!next.name || !next.className || !next.subject) {
+      setError('Fill in group name, class, and subject.');
+      return;
+    }
+    onSave(next);
   }
 
   return createPortal(
@@ -44,9 +50,10 @@ function GroupModal({ onClose, onSave }: { onClose: () => void; onSave: (group: 
           <Input label="Class" value={className} onChange={(event) => setClassName(event.target.value)} required hint="Example: Grade 8" />
           <Input label="Subject" value={subject} onChange={(event) => setSubject(event.target.value)} required hint="Example: Science" />
         </div>
+        {error ? <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">{error}</div> : null}
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="primary">Save locally</Button>
+          <Button type="submit" variant="primary">Create Group</Button>
         </div>
       </form>
     </div>,
@@ -57,18 +64,31 @@ function GroupModal({ onClose, onSave }: { onClose: () => void; onSave: (group: 
 export default function GroupsPage() {
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState<LocalGroup[]>([]);
+  const [storageError, setStorageError] = useState('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('vedaai-local-groups');
-    if (saved) setGroups(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('vedaai-local-groups');
+      if (saved) setGroups(JSON.parse(saved));
+    } catch {
+      setStorageError('Could not load saved groups from this browser.');
+    }
   }, []);
 
   const totalStudents = useMemo(() => 0, []);
 
   function saveGroup(group: Omit<LocalGroup, 'id'>) {
-    const next = [{ id: crypto.randomUUID(), ...group }, ...groups];
+    const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const next = [{ id, ...group }, ...groups];
     setGroups(next);
-    localStorage.setItem('vedaai-local-groups', JSON.stringify(next));
+    try {
+      localStorage.setItem('vedaai-local-groups', JSON.stringify(next));
+      setStorageError('');
+    } catch {
+      setStorageError('Group was created for this session, but could not be saved in this browser.');
+    }
     setOpen(false);
   }
 
@@ -97,6 +117,7 @@ export default function GroupsPage() {
             <p className="mt-2 text-sm font-semibold text-[var(--primary)]">Coming soon</p>
           </div>
         </div>
+        {storageError ? <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">{storageError}</div> : null}
 
         {groups.length === 0 ? (
           <div className="card flex min-h-[340px] flex-col items-center justify-center p-8 text-center">
