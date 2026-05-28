@@ -23,7 +23,7 @@ export function useWebSocket() {
   useEffect(() => {
     if (!token) return;
     const configuredUrl = process.env.NEXT_PUBLIC_WS_URL;
-    const socketUrl = configuredUrl?.startsWith('http://') ? undefined : configuredUrl;
+    const socketUrl = configuredUrl?.startsWith('http://') || configuredUrl?.includes('.vercel.app') ? undefined : configuredUrl;
     if (!socketUrl && process.env.NODE_ENV === 'production') return;
 
     const socket = io(socketUrl ?? '', { auth: { token }, withCredentials: true });
