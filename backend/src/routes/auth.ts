@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { changePassword, deleteMe, login, logout, me, refresh, register, updateMe, updateProfileImage } from '../controllers/authController.js';
+import { changePassword, deleteMe, forgotPassword, login, logout, me, refresh, register, resetPassword, updateMe, updateProfileImage } from '../controllers/authController.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { profileImageUpload } from '../middleware/upload.js';
 
@@ -7,6 +7,8 @@ export const authRouter = Router();
 
 authRouter.post('/register', profileImageUpload.single('profileImage'), register);
 authRouter.post('/login', login);
+authRouter.post('/forgot-password', forgotPassword);
+authRouter.post('/reset-password/:token', resetPassword);
 authRouter.post('/change-password', changePassword);
 authRouter.post('/refresh', refresh);
 authRouter.post('/logout', logout);

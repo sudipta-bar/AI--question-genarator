@@ -21,12 +21,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isProtected = protectedRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
   useEffect(() => {
+    if (isPublic) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     plainApi
       .get('/api/auth/me')
       .then(({ data }) => {
         setAuth(data.user, data.accessToken);
-        if (isPublic) router.replace('/home');
       })
       .catch(() => {
         clearAuth();
