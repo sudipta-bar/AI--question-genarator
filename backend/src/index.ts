@@ -32,11 +32,13 @@ const server = http.createServer(app);
 function isAllowedOrigin(origin: string | undefined) {
   if (!origin) return true;
   if (origin === env.FRONTEND_URL) return true;
+  if (origin === 'http://3.6.165.7:3000') return true;
   if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) return true;
   return env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(origin);
 }
 
 const corsOptions: cors.CorsOptions = {
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   origin(origin, callback) {
     callback(isAllowedOrigin(origin) ? null : new Error(`CORS blocked origin: ${origin}`), isAllowedOrigin(origin));
   },
