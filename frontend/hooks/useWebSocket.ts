@@ -24,8 +24,7 @@ export function useWebSocket() {
     if (!token) return;
     const configuredUrl = process.env.NEXT_PUBLIC_WS_URL || process.env.NEXT_PUBLIC_API_URL;
     const isFrontendHost = configuredUrl?.includes('.vercel.app') || configuredUrl?.includes('localhost:3000') || configuredUrl?.includes('localhost:3001');
-    const isInsecureProductionUrl = process.env.NODE_ENV === 'production' && configuredUrl?.startsWith('http://');
-    const socketUrl = configuredUrl && !isFrontendHost && !isInsecureProductionUrl ? configuredUrl : undefined;
+    const socketUrl = configuredUrl && !isFrontendHost ? configuredUrl : undefined;
     if (!socketUrl) return;
 
     const socket = io(socketUrl, { auth: { token }, withCredentials: true });

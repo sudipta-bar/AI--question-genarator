@@ -6,7 +6,7 @@ type QueueEntry = { resolve: (token: string) => void; reject: (error: unknown) =
 
 let isRefreshing = false;
 let queue: QueueEntry[] = [];
-const apiBaseURL = process.env.NEXT_PUBLIC_API_URL?.startsWith('http://') ? undefined : process.env.NEXT_PUBLIC_API_URL;
+const apiBaseURL = process.env.NEXT_PUBLIC_API_URL || undefined;
 
 const refreshClient = axios.create({ baseURL: apiBaseURL, withCredentials: true });
 
