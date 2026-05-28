@@ -28,7 +28,7 @@ async function publishStage(job: { updateProgress: (progress: number | object) =
 }
 
 export function startGenerationWorker() {
-  return new Worker('question-paper-generation', async (job) => {
+  const worker = new Worker('question-paper-generation', async (job) => {
     const assignmentId = job.data.assignmentId as string;
     console.info('[generation-worker] started', { assignmentId, jobId: job.id, attempt: job.attemptsMade + 1 });
     try {
@@ -125,4 +125,12 @@ export function startGenerationWorker() {
       throw error;
     }
   }, { connection: redisConnection, concurrency: 3 });
+
+  worker.on('ready', () => console.info('[generation-worker] ready'));
+  worker.on('active', (job) => console.info('[generation-worker] job active', { jobId: job.id, assignmentId: job.data?.assignmentId }));
+  worker.on('completed', (job) => console.info('[generation-worker] job completed', { jobId: job.id, assignmentId: job.data?.assignmentId }));
+  worker.on('failed', (job, error) => console.error('[generation-worker] job failed', { jobId: job?.id, assignmentId: job?.data?.assignmentId, message: error.message }));
+  worker.on('error', (error) => console.error('[generation-worker] worker error', { message: error.message, error }));
+
+  return worker;
 }

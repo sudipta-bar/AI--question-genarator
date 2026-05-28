@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useAssignmentStore } from '@/store/assignmentStore';
 import { useGenerationStore } from '@/store/generationStore';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
 export function useAssignmentForm() {
+  const router = useRouter();
   const form = useAssignmentStore();
   const generation = useGenerationStore();
   const socket = useWebSocket();
@@ -25,6 +27,40 @@ export function useAssignmentForm() {
     });
     setErrors(next);
     return Object.keys(next).length === 0;
+  }
+
+  function startStatusPolling(assignmentId: string) {
+    const startedAt = Date.now();
+    const interval = window.setInterval(async () => {
+      try {
+        const { data, status } = await api.get(`/api/assignments/${assignmentId}/paper`);
+        if (status === 202) {
+          generation.setStatus('processing');
+          generation.setStage('generating');
+          generation.setProgress(65, data.message || 'AI is generating questions...');
+          return;
+        }
+
+        if (data.paper) {
+          window.clearInterval(interval);
+          generation.setStatus('completed');
+          generation.setStage('completed');
+          generation.setProgress(100, 'Done! Redirecting...');
+          window.setTimeout(() => router.replace(`/assignments/create/result/${assignmentId}`), 500);
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 409) {
+          window.clearInterval(interval);
+          generation.setError(error.response.data?.message || 'Question paper generation failed');
+          return;
+        }
+
+        if (Date.now() - startedAt > 5 * 60 * 1000) {
+          window.clearInterval(interval);
+          generation.setError('Generation is taking too long. Check backend worker logs.');
+        }
+      }
+    }, 5000);
   }
 
   async function submit() {
@@ -46,6 +82,7 @@ export function useAssignmentForm() {
       generation.setAssignmentId(data.assignmentId);
       generation.setJobId(data.jobId);
       socket.subscribeToAssignment(data.assignmentId);
+      startStatusPolling(data.assignmentId);
     } catch {
       generation.setError('Could not start generation');
     } finally {
