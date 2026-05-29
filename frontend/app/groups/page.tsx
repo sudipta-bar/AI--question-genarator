@@ -104,15 +104,15 @@ export default function GroupsPage() {
         </header>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="card p-5">
+          <div className="card min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Groups</p>
             <p className="mt-2 text-2xl font-bold">{groups.length}</p>
           </div>
-          <div className="card p-5">
+          <div className="card min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Students</p>
             <p className="mt-2 text-2xl font-bold">{totalStudents}</p>
           </div>
-          <div className="card p-5">
+          <div className="card min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Status</p>
             <p className="mt-2 text-sm font-semibold text-[var(--primary)]">Coming soon</p>
           </div>
@@ -127,11 +127,11 @@ export default function GroupsPage() {
             <Button type="button" className="mt-6" onClick={() => setOpen(true)}>Create Group</Button>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {groups.map((group) => (
-              <article key={group.id} className="card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <h2 className="font-bold">{group.name}</h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">{group.className} - {group.subject}</p>
+              <article key={group.id} className="card min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5">
+                <h2 className="truncate font-bold">{group.name}</h2>
+                <p className="mt-2 truncate text-sm text-[var(--muted)]">{group.className} - {group.subject}</p>
                 <div className="mt-5 rounded-lg bg-[var(--bg)] p-3 text-xs text-[var(--muted)]">Group management feature coming soon</div>
               </article>
             ))}

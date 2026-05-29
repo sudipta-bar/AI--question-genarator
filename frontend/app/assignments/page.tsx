@@ -15,22 +15,24 @@ const AssignmentCard = memo(function AssignmentCard({ assignment }: { assignment
   );
 
   return (
-    <div className="card p-5">
-      <div className="font-bold">{assignment.subject}</div>
-      <div className="mt-1 text-sm text-[var(--muted)]">{assignment.className} - {assignment.schoolName}</div>
+    <article className="card min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] sm:p-5">
+      <div className="min-w-0">
+        <div className="truncate text-base font-bold">{assignment.subject}</div>
+        <div className="mt-1 truncate text-sm text-[var(--muted)]">{assignment.className} - {assignment.schoolName}</div>
+      </div>
       <div className="mt-3 text-sm">Due {dueDate}</div>
-      <Badge className="mt-4 bg-[var(--bg)] text-[var(--dark)]">{assignment.status}</Badge>
+      <Badge className="mt-4 max-w-full bg-[var(--bg)] text-[var(--dark)]">{assignment.status}</Badge>
       {assignment.status === 'completed' ? (
-        <Link className="mt-4 block text-sm font-semibold text-[var(--primary)]" href={`/assignments/create/result/${assignment._id}`}>View Paper</Link>
+        <Link className="mt-4 inline-flex text-sm font-semibold text-[var(--primary)]" href={`/assignments/create/result/${assignment._id}`}>View Paper</Link>
       ) : null}
-    </div>
+    </article>
   );
 });
 
 function AssignmentSkeleton() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }, (_, index) => <div key={index} className="card h-36 animate-pulse p-5" />)}
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 6 }, (_, index) => <div key={index} className="card h-36 animate-pulse p-4 sm:p-5" />)}
     </div>
   );
 }
@@ -57,12 +59,12 @@ export default function AssignmentsPage() {
   return (
     <AppShell breadcrumb="Assignment">
       {loading ? (
-        <div className="p-4 sm:p-6"><AssignmentSkeleton /></div>
+        <div className="mx-auto max-w-7xl p-4 sm:p-6 md:p-8"><AssignmentSkeleton /></div>
       ) : assignments.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="p-4 sm:p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-7xl p-4 sm:p-6 md:p-8">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {assignments.map((assignment) => <AssignmentCard key={assignment._id} assignment={assignment} />)}
           </div>
         </div>

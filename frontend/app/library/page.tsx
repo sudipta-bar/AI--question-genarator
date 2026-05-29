@@ -21,8 +21,8 @@ const statusClass: Record<Assignment['status'], string> = {
 
 function LibrarySkeleton() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {Array.from({ length: 6 }, (_, index) => <div key={index} className="card h-56 animate-pulse p-5" />)}
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {Array.from({ length: 6 }, (_, index) => <div key={index} className="card h-56 animate-pulse p-4 sm:p-5" />)}
     </div>
   );
 }
@@ -42,16 +42,16 @@ const LibraryCard = memo(function LibraryCard({
   const canOpen = assignment.status === 'completed';
 
   return (
-    <article className="card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+    <article className="card min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="truncate text-base font-bold">{assignment.subject} Question Paper</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">{assignment.className} - {assignment.schoolName || 'School'}</p>
         </div>
-        <Badge className={statusClass[assignment.status]}>{assignment.status}</Badge>
+        <Badge className={`shrink-0 ${statusClass[assignment.status]}`}>{assignment.status}</Badge>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
+      <div className="mt-5 grid grid-cols-2 gap-3 text-sm max-[360px]:grid-cols-1">
         <div className="rounded-lg bg-[var(--bg)] p-3">
           <p className="text-xs text-[var(--muted)]">Questions</p>
           <p className="mt-1 font-bold">{assignment.totalQuestions}</p>
@@ -124,7 +124,7 @@ export default function LibraryPage() {
             <h1 className="text-2xl font-bold">My Library</h1>
             <p className="mt-2 text-sm text-[var(--muted)]">Assignment history and generated question papers.</p>
           </div>
-          <Link href="/assignments/create" className="btn-base btn-dark">Create Assignment</Link>
+          <Link href="/assignments/create" className="btn-base btn-dark w-full sm:w-auto">Create Assignment</Link>
         </header>
 
         {loading ? <LibrarySkeleton /> : error ? (
@@ -137,7 +137,7 @@ export default function LibraryPage() {
             <Link href="/assignments/create" className="btn-base btn-accent mt-6">Create your first paper</Link>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {assignments.map((assignment) => (
               <LibraryCard key={assignment._id} assignment={assignment} onDownload={handleDownload} onRegenerate={handleRegenerate} onDelete={handleDelete} />
             ))}

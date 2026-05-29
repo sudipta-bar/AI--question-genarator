@@ -18,7 +18,7 @@ export function CreateAssignmentForm() {
 
   return (
     <>
-      <section className="card mx-auto max-w-[1120px] p-5 sm:p-8">
+      <section className="card mx-auto max-w-[1120px] p-4 sm:p-6 lg:p-8">
         <StepIndicator />
         <div className="mb-6">
           <h1 className="text-xl font-bold"><span className="text-[var(--success)]">●</span> Create Assignment</h1>
@@ -29,7 +29,7 @@ export function CreateAssignmentForm() {
             <h2 className="text-base font-bold">Assignment Details</h2>
             <p className="mt-1 text-[13px] text-[var(--muted)]">Basic information about your assignment</p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Subject" value={form.subject} onChange={(e) => form.setSubject(e.target.value)} error={errors.subject} />
             <Input label="Class" value={form.className} onChange={(e) => form.setClassName(e.target.value)} error={errors.className} />
           </div>
@@ -45,13 +45,13 @@ export function CreateAssignmentForm() {
             <div className="space-y-4">{form.questionTypes.map((row) => <QuestionTypeRow key={row.id} row={row} />)}</div>
             {errors.questionTypes ? <div className="mt-2 text-xs text-[var(--danger)]">{errors.questionTypes}</div> : null}
             <button type="button" onClick={form.addQuestionType} className="mt-4 inline-flex items-center gap-2 rounded-md px-1 py-1 text-sm font-semibold text-[var(--success)] hover:bg-[var(--surface-subtle)] active:scale-[0.98]"><span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--success)] text-white">+</span>Add Question Type</button>
-            <div className="flex justify-end gap-10 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] px-5 py-4 text-sm shadow-sm">
-              <span className="text-[var(--muted)]">Total Questions <strong className="ml-2 text-base text-[var(--foreground)]">{form.totalQuestions()}</strong></span>
-              <span className="text-[var(--muted)]">Total Marks <strong className="ml-2 text-base text-[var(--foreground)]">{form.totalMarks()}</strong></span>
+            <div className="flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] px-4 py-4 text-sm shadow-sm sm:flex-row sm:justify-end sm:gap-10 sm:px-5">
+              <span className="text-[var(--muted)]">Total Questions <strong className="ml-2 text-base text-[var(--text)]">{form.totalQuestions()}</strong></span>
+              <span className="text-[var(--muted)]">Total Marks <strong className="ml-2 text-base text-[var(--text)]">{form.totalMarks()}</strong></span>
             </div>
           </div>
           <AdditionalInfo />
-          <div className="flex justify-end gap-3">
+          <div className="grid gap-3 sm:flex sm:justify-end">
             <Button type="button" variant="outline">← Previous</Button>
             <Button type="button" onClick={submit} loading={submitting}>{submitting ? 'Generating...' : 'Next →'}</Button>
           </div>

@@ -42,9 +42,9 @@ export default function ToolkitPage() {
           <h1 className="text-2xl font-bold">AI Teacher&apos;s Toolkit</h1>
           <p className="mt-2 text-sm text-[var(--muted)]">Powerful AI tools to make teaching easier.</p>
         </header>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {tools.map((tool) => (
-            <article key={tool.title} className={`card relative p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] ${tool.available ? '' : 'opacity-75'}`}>
+            <article key={tool.title} className={`card relative min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] sm:p-5 ${tool.available ? '' : 'opacity-75'}`}>
               {!tool.available ? (
                 <span className="pill absolute right-3 top-3 bg-[var(--surface-subtle)] px-2.5 py-1 text-[11px] font-semibold text-[var(--muted)]">Coming Soon</span>
               ) : null}
