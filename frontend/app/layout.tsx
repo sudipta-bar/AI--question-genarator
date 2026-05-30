@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/components/AuthProvider';
+import { RouteTransition } from '@/components/RouteTransition';
 
 export const metadata: Metadata = {
   title: 'VedaAI',
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <RouteTransition>{children}</RouteTransition>
+        </AuthProvider>
       </body>
     </html>
   );

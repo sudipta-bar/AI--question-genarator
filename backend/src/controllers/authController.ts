@@ -13,7 +13,7 @@ import { sendPasswordResetEmail } from '../services/mailService.js';
 import { AuthRequest } from '../types/index.js';
 
 const registerSchema = z.object({ name: z.string().min(2), email: z.string().email(), password: z.string().min(6), schoolName: z.string().optional(), city: z.string().optional() });
-const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
+const loginSchema = z.object({ email: z.string().email().transform((email) => email.toLowerCase().trim()), password: z.string().min(1) });
 const forgotPasswordSchema = z.object({ email: z.string().email() });
 const resetPasswordSchema = z.object({ password: z.string().min(6) });
 const strongPasswordSchema = z

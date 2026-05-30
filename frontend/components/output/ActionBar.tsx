@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { downloadAssignmentPdf, regenerateCloudinaryPdf } from '@/lib/cloudPdf';
+import { Download } from 'lucide-react';
+import { downloadAssignmentPdf } from '@/lib/cloudPdf';
 import { Button } from '@/components/ui/Button';
 
 export function ActionBar({
@@ -9,11 +10,13 @@ export function ActionBar({
   pdfUrl,
   pdfDownloadUrl,
   onPdfUploaded,
+  onRegeneratePaper,
 }: {
   assignmentId: string;
   pdfUrl?: string;
   pdfDownloadUrl?: string;
   onPdfUploaded?: (url: string, downloadUrl?: string) => void;
+  onRegeneratePaper?: () => Promise<void>;
 }) {
   const [busy, setBusy] = useState(false);
   const [downloadError, setDownloadError] = useState('');
@@ -30,11 +33,7 @@ export function ActionBar({
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9.-]/g, '');
 
-      if (mode === 'regenerate') {
-        const data = await regenerateCloudinaryPdf(assignmentId);
-        const url = data.url || data.pdfUrl;
-        if (url) onPdfUploaded?.(url, url);
-      }
+      if (mode === 'regenerate') await onRegeneratePaper?.();
 
       setDownloadState('downloading');
       await downloadAssignmentPdf(assignmentId, filename);
@@ -63,11 +62,13 @@ export function ActionBar({
   }
 
   return (
-    <div className="no-print flex flex-wrap items-center justify-end gap-3">
-      {downloadState === 'error' && downloadError ? <span className="self-center text-sm text-[var(--danger)]">{downloadError}</span> : null}
-      <Button variant="outline" onClick={handleRegeneratePdf} disabled={busy}>Regenerate PDF</Button>
-      <Button onClick={handlePdf} loading={busy}>
-        {downloadState === 'preparing' ? 'Preparing PDF...' : downloadState === 'downloading' ? 'Saving PDF...' : downloadState === 'regenerating' ? 'Regenerating PDF...' : 'Download PDF'}
+    <div className="no-print flex flex-wrap items-center justify-end gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[var(--shadow-md)]">
+      {downloadState === 'error' && downloadError ? <span className="self-center text-sm text-red-200">{downloadError}</span> : null}
+      <Button variant="outline" className="rounded-full" onClick={handleRegeneratePdf} loading={downloadState === 'regenerating'} disabled={busy}>
+        {downloadState === 'regenerating' ? 'Regenerating...' : 'Regenerate PDF'}
+      </Button>
+      <Button className="rounded-full" onClick={handlePdf} loading={downloadState === 'preparing' || downloadState === 'downloading'} disabled={busy} leftIcon={<Download className="h-4 w-4" />}>
+        {downloadState === 'preparing' ? 'Preparing PDF...' : downloadState === 'downloading' ? 'Saving PDF...' : 'Download PDF'}
       </Button>
     </div>
   );

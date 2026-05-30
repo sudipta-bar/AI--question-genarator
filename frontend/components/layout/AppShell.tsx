@@ -73,12 +73,21 @@ export function AppShell({ breadcrumb, children }: { breadcrumb: string; childre
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[var(--bg)]">
+    <div className="h-dvh overflow-hidden bg-[var(--bg)] text-[var(--text)]">
       <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      <TopBar breadcrumb={breadcrumb} onMenuClick={() => setDrawerOpen(true)} onSearchClick={() => setSearchOpen(true)} />
-      <main className="mobile-content min-w-0 md:ml-[200px]">{children}</main>
+      <TopBar breadcrumb={breadcrumb} onMenuClick={() => setDrawerOpen(true)} onSearchClick={() => setSearchOpen(true)} scrolled={scrolled} />
+      <main
+        className="mobile-content mt-[5.5rem] h-[calc(100dvh-5.5rem)] min-w-0 overflow-y-auto overscroll-contain bg-[var(--bg)] animate-[fadeIn_300ms_ease-out] md:ml-[272px]"
+        onScroll={(event) => {
+          const nextScrolled = event.currentTarget.scrollTop > 8;
+          setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
+        }}
+      >
+        {children}
+      </main>
       <MobileBottomNav pathname={pathname} />
       <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>

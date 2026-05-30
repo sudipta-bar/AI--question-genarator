@@ -44,7 +44,7 @@ export default function ToolkitPage() {
         </header>
         <div className="grid gap-4 sm:grid-cols-2">
           {tools.map((tool) => (
-            <article key={tool.title} className={`card relative min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] sm:p-5 ${tool.available ? '' : 'opacity-75'}`}>
+            <article key={tool.title} className={`card motion-lift relative min-w-0 p-5 sm:p-6 ${tool.available ? '' : 'opacity-75'}`}>
               {!tool.available ? (
                 <span className="pill absolute right-3 top-3 bg-[var(--surface-subtle)] px-2.5 py-1 text-[11px] font-semibold text-[var(--muted)]">Coming Soon</span>
               ) : null}
@@ -52,7 +52,7 @@ export default function ToolkitPage() {
               <h3 className="mt-4 text-base font-semibold">{tool.title}</h3>
               <p className="mt-2 text-[13px] leading-5 text-[var(--muted)]">{tool.description}</p>
               {tool.available ? (
-                <Link href={tool.href} className="mt-5 inline-flex text-[13px] font-semibold text-[var(--primary)] hover:underline active:scale-[0.99]">Open Tool →</Link>
+                <Link href={tool.href} className="mt-5 inline-flex text-[13px] font-semibold text-[var(--primary)] transition-transform hover:translate-x-0.5 hover:underline active:scale-[0.99]">Open Tool -&gt;</Link>
               ) : null}
             </article>
           ))}

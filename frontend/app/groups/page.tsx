@@ -43,14 +43,14 @@ function GroupModal({ onClose, onSave }: { onClose: () => void; onSave: (group: 
             <h2 className="text-lg font-bold">Create Group</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">Lightweight local group setup. Full group management is coming soon.</p>
           </div>
-          <button type="button" onClick={onClose} className="rounded-full px-2 text-xl text-[var(--muted)] hover:bg-[var(--bg)]">x</button>
+          <button type="button" onClick={onClose} className="motion-press flex h-9 w-9 items-center justify-center rounded-full text-xl text-[var(--muted)] hover:bg-[var(--surface-subtle)]">x</button>
         </div>
         <div className="mt-5 space-y-4">
           <Input label="Group Name" value={name} onChange={(event) => setName(event.target.value)} required hint="Example: Grade 8 Science A" />
           <Input label="Class" value={className} onChange={(event) => setClassName(event.target.value)} required hint="Example: Grade 8" />
           <Input label="Subject" value={subject} onChange={(event) => setSubject(event.target.value)} required hint="Example: Science" />
         </div>
-        {error ? <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600">{error}</div> : null}
+        {error ? <div className="mt-4 rounded-md border border-[color-mix(in_srgb,var(--danger)_35%,var(--border))] bg-[color-mix(in_srgb,var(--danger)_10%,var(--surface))] px-3 py-2 text-sm font-semibold text-[var(--danger)]">{error}</div> : null}
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
           <Button type="submit" variant="primary">Create Group</Button>
@@ -104,24 +104,24 @@ export default function GroupsPage() {
         </header>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="card min-w-0 p-4 sm:p-5">
+          <div className="card motion-lift min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Groups</p>
             <p className="mt-2 text-2xl font-bold">{groups.length}</p>
           </div>
-          <div className="card min-w-0 p-4 sm:p-5">
+          <div className="card motion-lift min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Students</p>
             <p className="mt-2 text-2xl font-bold">{totalStudents}</p>
           </div>
-          <div className="card min-w-0 p-4 sm:p-5">
+          <div className="card motion-lift min-w-0 p-4 sm:p-5">
             <p className="text-xs text-[var(--muted)]">Status</p>
             <p className="mt-2 text-sm font-semibold text-[var(--primary)]">Coming soon</p>
           </div>
         </div>
-        {storageError ? <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">{storageError}</div> : null}
+        {storageError ? <div className="rounded-md border border-amber-300/60 bg-amber-500/10 px-4 py-3 text-sm font-semibold text-amber-700 dark:text-amber-200">{storageError}</div> : null}
 
         {groups.length === 0 ? (
-          <div className="card flex min-h-[340px] flex-col items-center justify-center p-8 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--bg)] text-3xl">+</div>
+          <div className="card motion-lift flex min-h-[340px] flex-col items-center justify-center p-8 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--surface-subtle)] text-3xl text-[var(--primary)]">+</div>
             <h2 className="mt-6 text-lg font-bold">No groups yet</h2>
             <p className="mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">Create a lightweight local group now. Advanced group management will be added later.</p>
             <Button type="button" className="mt-6" onClick={() => setOpen(true)}>Create Group</Button>
@@ -129,10 +129,10 @@ export default function GroupsPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {groups.map((group) => (
-              <article key={group.id} className="card min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5">
+              <article key={group.id} className="card motion-lift min-w-0 p-4 sm:p-5">
                 <h2 className="truncate font-bold">{group.name}</h2>
                 <p className="mt-2 truncate text-sm text-[var(--muted)]">{group.className} - {group.subject}</p>
-                <div className="mt-5 rounded-lg bg-[var(--bg)] p-3 text-xs text-[var(--muted)]">Group management feature coming soon</div>
+                <div className="mt-5 rounded-lg bg-[var(--surface-subtle)] p-3 text-xs text-[var(--muted)]">Group management feature coming soon</div>
               </article>
             ))}
           </div>

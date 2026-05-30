@@ -19,7 +19,7 @@ export function UserAvatar({ user, size = 'md', className = '' }: UserAvatarProp
   const initial = user?.name?.trim()?.[0]?.toUpperCase() ?? 'T';
 
   return (
-    <div className={`${sizes[size]} relative shrink-0 overflow-hidden rounded-full border border-white/70 bg-gradient-to-br from-orange-500 to-zinc-950 font-bold text-white shadow-sm ${className}`}>
+    <div className={`${sizes[size]} relative shrink-0 overflow-hidden rounded-full border border-[color-mix(in_srgb,var(--surface)_70%,transparent)] bg-gradient-to-br from-orange-500 to-zinc-950 font-bold text-white shadow-sm ${className}`}>
       {user?.profileImage ? (
         <img src={user.profileImage} alt={user.name ? `${user.name} profile` : 'Profile'} className="h-full w-full object-cover" />
       ) : (

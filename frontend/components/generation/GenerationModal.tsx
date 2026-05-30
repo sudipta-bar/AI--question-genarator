@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
+import { playInterfaceSound } from '@/lib/interfaceAudio';
 import { useAssignmentStore } from '@/store/assignmentStore';
 import { GenerationStage, useGenerationStore } from '@/store/generationStore';
 
@@ -53,6 +54,7 @@ export function GenerationModal({ onRetry }: { onRetry?: () => void }) {
 
   useEffect(() => {
     if (status !== 'completed') return;
+    playInterfaceSound('success');
     const timer = window.setTimeout(() => {
       useGenerationStore.getState().reset();
       useAssignmentStore.getState().resetForm();
@@ -60,13 +62,17 @@ export function GenerationModal({ onRetry }: { onRetry?: () => void }) {
     return () => window.clearTimeout(timer);
   }, [status]);
 
+  useEffect(() => {
+    if (status === 'failed') playInterfaceSound('error');
+  }, [status]);
+
   if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-4 backdrop-blur-md animate-[fadeIn_180ms_ease-out]">
-      <div role="dialog" aria-modal="true" aria-labelledby="generation-title" className="w-full max-w-lg rounded-2xl border border-white/15 bg-[var(--surface)] p-5 shadow-2xl sm:p-6 animate-[modalIn_220ms_ease-out]">
+      <div role="dialog" aria-modal="true" aria-labelledby="generation-title" className="motion-surface w-full max-w-lg rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-lg)] sm:p-6">
         <div className="flex items-start gap-4">
-          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${status === 'failed' ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-200' : status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-200' : 'bg-[var(--bg)] text-[var(--primary)]'}`}>
+          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${status === 'failed' ? 'bg-red-500/10 text-[var(--danger)]' : status === 'completed' ? 'bg-green-500/10 text-green-600 dark:text-green-300' : 'bg-[var(--surface-subtle)] text-[var(--primary)]'}`}>
             {status === 'failed' ? (
               <span className="text-xl font-bold">!</span>
             ) : status === 'completed' ? (
@@ -79,12 +85,12 @@ export function GenerationModal({ onRetry }: { onRetry?: () => void }) {
             <h2 id="generation-title" className="text-lg font-bold">{title}</h2>
             <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{message}</p>
           </div>
-          <div className="rounded-full bg-[var(--bg)] px-3 py-1 text-sm font-semibold">{Math.round(safeProgress)}%</div>
+          <div className="rounded-full bg-[var(--surface-subtle)] px-3 py-1 text-sm font-semibold">{Math.round(safeProgress)}%</div>
         </div>
 
         <div className="mt-6">
-          <div className="h-3 overflow-hidden rounded-full bg-[var(--bg)]">
-            <div className="h-full rounded-full bg-[var(--primary)] transition-all duration-500 ease-out" style={{ width: `${safeProgress}%` }} />
+          <div className="h-3 overflow-hidden rounded-full bg-[var(--surface-subtle)]">
+            <div className="motion-progress h-full rounded-full bg-[var(--primary)] transition-all duration-500 ease-out" style={{ width: `${safeProgress}%` }} />
           </div>
           <div className="mt-5 space-y-3">
             {steps.map((step, index) => {

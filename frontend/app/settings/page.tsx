@@ -21,8 +21,8 @@ type Theme = 'light' | 'dark';
 type ToastState = { message: string; type: 'success' | 'error' };
 
 const maxImageSize = 4 * 1024 * 1024;
-const card = 'rounded-3xl border border-black/10 bg-white/82 p-5 shadow-xl shadow-slate-950/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/60 sm:p-6';
-const panel = 'rounded-2xl border border-black/10 bg-slate-50/80 p-4 dark:border-white/10 dark:bg-white/[0.04] sm:p-5';
+const card = 'rounded-3xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_88%,transparent)] p-5 shadow-[var(--shadow-md)] backdrop-blur-xl sm:p-6';
+const panel = 'rounded-2xl border border-[var(--border)] bg-[var(--surface-subtle)] p-4 sm:p-5';
 
 function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -174,13 +174,13 @@ export default function SettingsPage() {
   return (
     <AppShell breadcrumb="Settings">
       <Toast message={toast?.message ?? ''} type={toast?.type} />
-      <form onSubmit={handleSubmit(onSave)} className="min-h-[calc(100vh-56px)] bg-[radial-gradient(circle_at_10%_8%,rgba(232,84,26,0.13),transparent_24rem),linear-gradient(135deg,#f8fafc,#ffffff_48%,#f1f5f9)] p-4 dark:bg-[radial-gradient(circle_at_10%_8%,rgba(255,122,61,0.12),transparent_24rem),linear-gradient(135deg,#020817,#0f172a_48%,#111827)] sm:p-6 md:p-8">
+      <form onSubmit={handleSubmit(onSave)} className="min-h-full bg-[var(--bg)] p-4 sm:p-6 md:p-8">
         <div className="mx-auto w-full max-w-6xl space-y-6">
           <motion.header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600 dark:text-orange-300">Workspace</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 dark:text-white">Settings</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">Manage your identity, workspace details, and account controls.</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary)]">Workspace</p>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text)]">Settings</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">Manage your identity, workspace details, and account controls.</p>
             </div>
             <Button type="submit" variant="primary" className="w-full sm:w-auto" loading={isSubmitting} disabled={!isDirty && !isSubmitting} leftIcon={<Save className="h-4 w-4" />}>
               {isSubmitting ? 'Saving...' : 'Save Changes'}
@@ -191,19 +191,19 @@ export default function SettingsPage() {
             <motion.section className={card} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-base font-semibold text-slate-950 dark:text-white">Profile Photo</h2>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Shown across your dashboard.</p>
+                  <h2 className="text-base font-semibold text-[var(--text)]">Profile Photo</h2>
+                  <p className="mt-1 text-sm text-[var(--muted)]">Shown across your dashboard.</p>
                 </div>
                 <CheckCircle2 className="h-5 w-5 text-emerald-500" />
               </div>
 
-              <div {...getRootProps()} className={`mt-6 rounded-3xl border border-dashed p-5 text-center transition-all ${isDragActive ? 'border-orange-400 bg-orange-500/10' : 'border-slate-300 bg-slate-50/80 dark:border-white/10 dark:bg-white/[0.03]'}`}>
+              <div {...getRootProps()} className={`mt-6 rounded-3xl border border-dashed p-5 text-center transition-all ${isDragActive ? 'border-[var(--primary)] bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]' : 'border-[var(--border-strong)] bg-[var(--surface-subtle)]'}`}>
                 <input {...getInputProps()} />
                 <div className="mx-auto flex justify-center">
-                  <UserAvatar user={previewUser} size="xl" className="ring-4 ring-white dark:ring-slate-900" />
+                  <UserAvatar user={previewUser} size="xl" className="ring-4 ring-[var(--surface)]" />
                 </div>
-                <p className="mt-4 text-sm font-semibold text-slate-950 dark:text-white">{photoFile ? photoFile.name : user?.name ?? 'Teacher'}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">Drop a new image here or use the update button.</p>
+                <p className="mt-4 text-sm font-semibold text-[var(--text)]">{photoFile ? photoFile.name : user?.name ?? 'Teacher'}</p>
+                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">Drop a new image here or use the update button.</p>
                 {photoError ? <p className="mt-3 text-xs font-semibold text-[var(--danger)]">{photoError}</p> : null}
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Button type="button" variant="outline" className="w-full" onClick={open} leftIcon={<ImagePlus className="h-4 w-4" />}>Choose Photo</Button>
@@ -216,8 +216,8 @@ export default function SettingsPage() {
 
             <motion.section className={card} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
               <div>
-                <h2 className="text-base font-semibold text-slate-950 dark:text-white">Profile Information</h2>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Saved directly to MongoDB when you submit changes.</p>
+                <h2 className="text-base font-semibold text-[var(--text)]">Profile Information</h2>
+                <p className="mt-1 text-sm text-[var(--muted)]">Saved directly to MongoDB when you submit changes.</p>
               </div>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <Input label="Full Name" leftIcon={<UserRound className="h-4 w-4" />} error={errors.name?.message} {...register('name')} />
@@ -230,17 +230,17 @@ export default function SettingsPage() {
 
           <motion.section className={card} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
             <div className="flex flex-col gap-1">
-              <h2 className="text-base font-semibold text-slate-950 dark:text-white">Preferences</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Personalize the interface for focused work.</p>
+              <h2 className="text-base font-semibold text-[var(--text)]">Preferences</h2>
+              <p className="text-sm text-[var(--muted)]">Personalize the interface for focused work.</p>
             </div>
             <div className={`mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between ${panel}`}>
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-orange-500 shadow-sm dark:bg-slate-900">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--surface)] text-[var(--primary)] shadow-sm">
                   {isDark ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-950 dark:text-white">Dark Mode</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{isDark ? 'Dark theme is on for reduced glare.' : 'Light theme is on for higher contrast.'}</p>
+                  <p className="text-sm font-semibold text-[var(--text)]">Dark Mode</p>
+                  <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{isDark ? 'Dark theme is on for reduced glare.' : 'Light theme is on for higher contrast.'}</p>
                 </div>
               </div>
               <button
@@ -257,14 +257,14 @@ export default function SettingsPage() {
 
           <motion.section className={card} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="flex flex-col gap-1">
-              <h2 className="text-base font-semibold text-slate-950 dark:text-white">Account</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Session controls and permanent account actions.</p>
+              <h2 className="text-base font-semibold text-[var(--text)]">Account</h2>
+              <p className="text-sm text-[var(--muted)]">Session controls and permanent account actions.</p>
             </div>
             <div className="mt-5 grid gap-3 lg:grid-cols-2">
               <div className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${panel}`}>
                 <div>
-                  <p className="text-sm font-semibold text-slate-950 dark:text-white">Logout</p>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sign out from current session.</p>
+                  <p className="text-sm font-semibold text-[var(--text)]">Logout</p>
+                  <p className="mt-1 text-xs text-[var(--muted)]">Sign out from current session.</p>
                 </div>
                 <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => setShowLogoutConfirm(true)} leftIcon={<LogOut className="h-4 w-4" />}>Logout</Button>
               </div>
@@ -285,9 +285,9 @@ export default function SettingsPage() {
 
       {showLogoutConfirm ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-3xl border border-black/10 bg-white p-6 text-center shadow-2xl shadow-black/20 dark:border-white/10 dark:bg-[#0B1120]">
-            <h3 className="text-lg font-bold text-slate-950 dark:text-white">Logout from VedaAI?</h3>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">You will need to sign in again to access your account.</p>
+          <div className="w-full max-w-sm rounded-3xl border border-[var(--border)] bg-[var(--surface-elevated)] p-6 text-center shadow-2xl shadow-black/20">
+            <h3 className="text-lg font-bold text-[var(--text)]">Logout from VedaAI?</h3>
+            <p className="mt-2 text-sm text-[var(--muted)]">You will need to sign in again to access your account.</p>
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
               <Button type="button" variant="outline" onClick={() => setShowLogoutConfirm(false)}>Cancel</Button>
               <Button type="button" onClick={handleLogout} loading={isLoggingOut}>{isLoggingOut ? 'Logging out...' : 'Yes, Logout'}</Button>

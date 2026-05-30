@@ -16,7 +16,7 @@ export function PasswordStrength({ password }: { password: string }) {
     <div aria-live="polite">
       <div className="mt-2 flex items-center gap-1">
         {[1, 2, 3, 4].map((i) => (
-          <span key={i} className="h-1.5 flex-1 rounded-full transition-colors duration-200" style={{ background: i <= strength.count ? strength.color : 'var(--border)' }} />
+          <span key={i} className="h-1.5 flex-1 rounded-full transition-all duration-300 ease-out" style={{ background: i <= strength.count ? strength.color : 'var(--border)' }} />
         ))}
       </div>
       <div className="mt-1 text-right text-xs font-medium" style={{ color: strength.color }}>{strength.label}</div>

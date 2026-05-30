@@ -12,7 +12,7 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { Assignment } from '@/types';
 
 const statusClass: Record<Assignment['status'], string> = {
-  draft: 'bg-[var(--bg)] text-[var(--muted)]',
+  draft: 'bg-[var(--surface-subtle)] text-[var(--muted)]',
   queued: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200',
   processing: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
   completed: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200',
@@ -29,11 +29,13 @@ function LibrarySkeleton() {
 
 const LibraryCard = memo(function LibraryCard({
   assignment,
+  index,
   onDownload,
   onRegenerate,
   onDelete,
 }: {
   assignment: Assignment;
+  index: number;
   onDownload: (assignment: Assignment) => void;
   onRegenerate: (assignment: Assignment) => void;
   onDelete: (assignment: Assignment) => void;
@@ -42,21 +44,21 @@ const LibraryCard = memo(function LibraryCard({
   const canOpen = assignment.status === 'completed';
 
   return (
-    <article className="card min-w-0 p-4 transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5">
+    <article className="card motion-lift min-w-0 animate-fade-up p-4 sm:p-5" style={{ animationDelay: `${index * 60}ms` }}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="truncate text-base font-bold">{assignment.subject} Question Paper</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">{assignment.className} - {assignment.schoolName || 'School'}</p>
         </div>
-        <Badge className={`shrink-0 ${statusClass[assignment.status]}`}>{assignment.status}</Badge>
+        <Badge className={`shrink-0 ${assignment.status === 'completed' ? 'animate-pop-in' : ''} ${statusClass[assignment.status]}`}>{assignment.status}</Badge>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3 text-sm max-[360px]:grid-cols-1">
-        <div className="rounded-lg bg-[var(--bg)] p-3">
+        <div className="rounded-lg bg-[var(--surface-subtle)] p-3">
           <p className="text-xs text-[var(--muted)]">Questions</p>
           <p className="mt-1 font-bold">{assignment.totalQuestions}</p>
         </div>
-        <div className="rounded-lg bg-[var(--bg)] p-3">
+        <div className="rounded-lg bg-[var(--surface-subtle)] p-3">
           <p className="text-xs text-[var(--muted)]">Total marks</p>
           <p className="mt-1 font-bold">{assignment.totalMarks}</p>
         </div>
@@ -65,10 +67,10 @@ const LibraryCard = memo(function LibraryCard({
       <p className="mt-4 text-xs text-[var(--muted)]">Generated {generatedDate}</p>
 
       <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <Link aria-disabled={!canOpen} className={`btn-base h-10 px-3 ${canOpen ? 'btn-dark' : 'btn-disabled pointer-events-none bg-[var(--surface-subtle)] text-[var(--muted)]'}`} href={`/assignments/create/result/${assignment._id}`}>View</Link>
-        <button type="button" disabled={!canOpen} onClick={() => onDownload(assignment)} className="btn-base btn-outline h-10 px-3">PDF</button>
-        <button type="button" onClick={() => onRegenerate(assignment)} className="btn-base btn-outline h-10 px-3">Retry</button>
-        <button type="button" onClick={() => onDelete(assignment)} className="btn-base btn-danger h-10 px-3">Delete</button>
+        <Link aria-disabled={!canOpen} className={`btn-base h-10 px-3 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.96] ${canOpen ? 'btn-dark' : 'btn-disabled pointer-events-none bg-[var(--surface-subtle)] text-[var(--muted)]'}`} href={`/assignments/create/result/${assignment._id}`}>View</Link>
+        <button type="button" disabled={!canOpen} onClick={() => onDownload(assignment)} className="btn-base btn-outline h-10 px-3 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.96]">PDF</button>
+        <button type="button" onClick={() => onRegenerate(assignment)} className="btn-base btn-outline h-10 px-3 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.96]">Retry</button>
+        <button type="button" onClick={() => onDelete(assignment)} className="btn-base btn-danger h-10 px-3 transition-all duration-150 hover:scale-[1.03] hover:bg-red-600 active:scale-[0.95]">Delete</button>
       </div>
     </article>
   );
@@ -119,27 +121,25 @@ export default function LibraryPage() {
   return (
     <AppShell breadcrumb="My Library">
       <div className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 md:p-8">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <header className="flex animate-fade-up flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold">My Library</h1>
             <p className="mt-2 text-sm text-[var(--muted)]">Assignment history and generated question papers.</p>
           </div>
-          <Link href="/assignments/create" className="btn-base btn-dark w-full sm:w-auto">Create Assignment</Link>
         </header>
 
         {loading ? <LibrarySkeleton /> : error ? (
           <div className="card p-8 text-center text-sm text-[var(--danger)]">{error}</div>
         ) : assignments.length === 0 ? (
-          <div className="card flex min-h-[360px] flex-col items-center justify-center p-8 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--bg)] text-3xl">□</div>
+          <div className="card motion-lift flex min-h-[360px] flex-col items-center justify-center p-8 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--surface-subtle)] text-3xl text-[var(--primary)]">□</div>
             <h2 className="mt-6 text-lg font-bold">Library is empty</h2>
             <p className="mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">Generated question papers will appear here automatically after BullMQ completes an AI generation job.</p>
-            <Link href="/assignments/create" className="btn-base btn-accent mt-6">Create your first paper</Link>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {assignments.map((assignment) => (
-              <LibraryCard key={assignment._id} assignment={assignment} onDownload={handleDownload} onRegenerate={handleRegenerate} onDelete={handleDelete} />
+            {assignments.map((assignment, index) => (
+              <LibraryCard key={assignment._id} assignment={assignment} index={index} onDownload={handleDownload} onRegenerate={handleRegenerate} onDelete={handleDelete} />
             ))}
           </div>
         )}

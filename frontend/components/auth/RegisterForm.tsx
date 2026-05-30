@@ -82,11 +82,11 @@ export function RegisterForm() {
       className="space-y-4"
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
       <div
         {...getRootProps()}
-        className={`group relative overflow-hidden rounded-3xl border border-dashed p-4 transition-all duration-300 ${
+        className={`group relative cursor-pointer overflow-hidden rounded-3xl border border-dashed p-4 transition-all duration-200 hover:scale-[1.02] hover:border-orange-400 ${
           isDragActive
             ? 'border-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/10'
             : 'border-white/40 bg-white/55 hover:border-orange-300 hover:bg-white/70 dark:border-white/10 dark:bg-white/[0.04]'
@@ -116,8 +116,8 @@ export function RegisterForm() {
       {imageError ? <p className="-mt-2 text-xs font-semibold text-[var(--danger)]">{imageError}</p> : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input label="Full Name" leftIcon={<UserRound className="h-4 w-4" />} error={errors.name?.message} {...register('name')} />
-        <Input label="Email address" type="email" leftIcon={<Mail className="h-4 w-4" />} error={errors.email?.message} {...register('email')} />
+        <Input label="Full Name" leftIcon={<UserRound className="h-4 w-4" />} error={errors.name?.message} className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400" style={{ animationDelay: '0ms' }} {...register('name')} />
+        <Input label="Email address" type="email" leftIcon={<Mail className="h-4 w-4" />} error={errors.email?.message} className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400" style={{ animationDelay: '40ms' }} {...register('email')} />
       </div>
       <div>
         <Input
@@ -125,6 +125,8 @@ export function RegisterForm() {
           type={visible.password ? 'text' : 'password'}
           leftIcon="*"
           error={errors.password?.message}
+          className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400"
+          style={{ animationDelay: '80ms' }}
           rightIcon={<button className="rounded px-1.5 py-0.5 text-xs hover:bg-[var(--surface-subtle)] active:scale-[0.96]" type="button" onClick={() => setVisible((state) => ({ ...state, password: !state.password }))}>{visible.password ? 'Hide' : 'Show'}</button>}
           {...register('password')}
         />
@@ -135,14 +137,16 @@ export function RegisterForm() {
         type={visible.confirm ? 'text' : 'password'}
         leftIcon="*"
         error={errors.confirmPassword?.message}
+        className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400"
+        style={{ animationDelay: '120ms' }}
         rightIcon={<button className="rounded px-1.5 py-0.5 text-xs hover:bg-[var(--surface-subtle)] active:scale-[0.96]" type="button" onClick={() => setVisible((state) => ({ ...state, confirm: !state.confirm }))}>{visible.confirm ? 'Hide' : 'Show'}</button>}
         {...register('confirmPassword')}
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input label="School Name" leftIcon={<School className="h-4 w-4" />} error={errors.schoolName?.message} {...register('schoolName')} />
-        <Input label="City" leftIcon={<MapPin className="h-4 w-4" />} error={errors.city?.message} {...register('city')} />
+        <Input label="School Name" leftIcon={<School className="h-4 w-4" />} error={errors.schoolName?.message} className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400" style={{ animationDelay: '160ms' }} {...register('schoolName')} />
+        <Input label="City" leftIcon={<MapPin className="h-4 w-4" />} error={errors.city?.message} className="animate-fade-up transition-shadow duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400" style={{ animationDelay: '200ms' }} {...register('city')} />
       </div>
-      <Button variant="primary" className="w-full shadow-lg shadow-orange-500/10" loading={isSubmitting}>{isSubmitting ? 'Creating account...' : 'Create Account'}</Button>
+      <Button variant="primary" className="w-full shadow-lg shadow-orange-500/10 transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97]" loading={isSubmitting}>{isSubmitting ? 'Creating account...' : 'Create Account'}</Button>
       {serverError ? <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">{serverError}</div> : null}
       <p className="text-center text-sm text-slate-600 dark:text-slate-300">Already have an account? <Link className="font-semibold text-orange-600 dark:text-orange-300" href="/login">Sign in</Link></p>
     </motion.form>
