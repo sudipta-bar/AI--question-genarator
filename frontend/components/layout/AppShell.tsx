@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { Sidebar } from './Sidebar';
@@ -75,12 +75,34 @@ export function AppShell({ breadcrumb, children }: { breadcrumb: string; childre
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => {
+    function createRipple(event: MouseEvent) {
+      const target = (event.target as Element | null)?.closest<HTMLElement>('a, button, .card, [role="button"]');
+      if (!target || target.closest('[data-ripple="off"]')) return;
+
+      const rect = target.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const ripple = document.createElement('span');
+      ripple.className = 'click-ripple';
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+      ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
+      target.classList.add('ripple-host');
+      target.appendChild(ripple);
+      window.setTimeout(() => ripple.remove(), 700);
+    }
+
+    document.addEventListener('click', createRipple, { capture: true });
+    return () => document.removeEventListener('click', createRipple, { capture: true });
+  }, []);
+
   return (
-    <div className="h-dvh overflow-hidden bg-[var(--bg)] text-[var(--text)]">
+    <div className="h-dvh overflow-hidden bg-[#EFEFEF] text-[var(--text)]">
       <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <TopBar breadcrumb={breadcrumb} onMenuClick={() => setDrawerOpen(true)} onSearchClick={() => setSearchOpen(true)} scrolled={scrolled} />
       <main
-        className="mobile-content mt-[5.5rem] h-[calc(100dvh-5.5rem)] min-w-0 overflow-y-auto overscroll-contain bg-[var(--bg)] animate-[fadeIn_300ms_ease-out] md:ml-[272px]"
+        className="mobile-content mt-24 h-[calc(100dvh-6rem)] min-w-0 overflow-y-auto overscroll-contain bg-[#EFEFEF] p-6 animate-[fadeIn_300ms_ease-out] md:ml-[372px]"
         onScroll={(event) => {
           const nextScrolled = event.currentTarget.scrollTop > 8;
           setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
