@@ -395,3 +395,80 @@ a { color: inherit; text-decoration: none; }
 @media (min-width: 768px) {
   .mobile-only { display: none !important; }
 }
+
+/* ---- Dark-mode dashboard overrides (added) ---- */
+/* Main layout */
+.dark .h-dvh,
+.dark .mobile-content {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Topbar / nav */
+.dark .topbar {
+  background: var(--nav-top-bg) !important;
+  border-color: var(--nav-border) !important;
+  box-shadow: var(--nav-top-shadow) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  color: var(--text) !important;
+}
+.dark .topbar * {
+  color: inherit !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* Stat cards / surfaces */
+.dark .card,
+.dark .home-stat-card {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text) !important;
+}
+
+/* Headings & important text contrast inside dashboard */
+.dark .mobile-content h1,
+.dark .mobile-content h2,
+.dark .mobile-content h3,
+.dark .mobile-content h4,
+.dark .mobile-content h5,
+.dark .mobile-content p {
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text) !important;
+  text-shadow: none !important;
+}
+
+/* Fallback for OS dark preference (if no .dark class) */
+@media (prefers-color-scheme: dark) {
+  .h-dvh,
+  .mobile-content {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+  }
+  .topbar {
+    background: var(--nav-top-bg) !important;
+    border-color: var(--nav-border) !important;
+    box-shadow: var(--nav-top-shadow) !important;
+    color: var(--text) !important;
+  }
+  .card,
+  .home-stat-card {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    box-shadow: var(--shadow-md) !important;
+    color: var(--text) !important;
+  }
+  .mobile-content h1,
+  .mobile-content h2,
+  .mobile-content h3,
+  .mobile-content h4,
+  .mobile-content h5,
+  .mobile-content p {
+    color: var(--text) !important;
+    -webkit-text-fill-color: var(--text) !important;
+  }
+}
+
+/* ---- end overrides ---- */
